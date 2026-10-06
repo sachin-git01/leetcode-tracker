@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ProblemCard from "./components/ProblemCard";
 import Navbar from "./components/Navbar";
 import LandingHero from "./components/LandingHero";
@@ -68,7 +68,7 @@ const getMasteryRank = (count) => {
 };
 
 function App() {
-  const { isAuthenticated, authHeader, token } = useAuth();
+  const { isAuthenticated, authHeader } = useAuth();
 
   const [title, setTitle] = useState("");
   const [topic, setTopic] = useState("");
@@ -95,7 +95,7 @@ function App() {
   const addInputContainerRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const loadProblems = () => {
+  const loadProblems = useCallback(() => {
     if (!isAuthenticated) {
       setProblems([]);
       return;
@@ -110,15 +110,23 @@ function App() {
       })
       .then((data) => setProblems(Array.isArray(data) ? data : []))
       .catch((err) => console.error("Failed to load problems:", err));
-  };
+  }, [isAuthenticated, authHeader]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      loadProblems();
-    } else {
-      setProblems([]);
-    }
-  }, [isAuthenticated, token]);
+    if (!isAuthenticated) return;
+    let ignore = false;
+    fetch(API_BASE, { headers: authHeader })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => {
+        if (!ignore) {
+          setProblems(Array.isArray(data) ? data : []);
+        }
+      })
+      .catch((err) => console.error("Failed to load problems:", err));
+    return () => {
+      ignore = true;
+    };
+  }, [isAuthenticated, authHeader]);
 
   // Global Keyboard Shortcuts (/ to focus input, Esc to close modals)
   useEffect(() => {
@@ -138,13 +146,19 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const handleTitleChange = (e) => {
+    const val = e.target.value;
+    setTitle(val);
+    if (!val.trim()) {
+      setAddSuggestions([]);
+      setShowAddSuggestions(false);
+    }
+  };
+
   // Fetch suggestions for problem name input
   useEffect(() => {
     const trimmed = title.trim();
-    if (!trimmed) {
-      setAddSuggestions([]);
-      return;
-    }
+    if (!trimmed) return;
 
     const timer = setTimeout(() => {
       fetch(`${API_BASE}/suggestions?q=${encodeURIComponent(trimmed)}`)
@@ -707,7 +721,7 @@ function App() {
                 placeholder="Search by name, ID (#1486) or paste URL..."
                 value={title}
                 onFocus={() => title.trim() && setShowAddSuggestions(true)}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={handleTitleChange}
               />
             </div>
 

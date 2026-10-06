@@ -8,7 +8,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID || "");
 
 const generateToken = (userId, email, name) => {
   return jwt.sign({ id: userId, email, name }, JWT_SECRET, {
-    expiresIn: "30d"
+    expiresIn: "7d" // Auto-expire after 1 week
   });
 };
 

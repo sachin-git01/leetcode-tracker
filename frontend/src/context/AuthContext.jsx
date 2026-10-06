@@ -4,11 +4,28 @@ const AuthContext = createContext(null);
 
 const API_BASE = (import.meta.env.VITE_API_URL || "http://localhost:5000").replace(/\/$/, "");
 
+const ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000; // 7 days (1 week)
+
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(() => localStorage.getItem("lc_token") || "");
+  const [token, setToken] = useState(() => {
+    const saved = localStorage.getItem("lc_token") || "";
+    const loginTime = Number(localStorage.getItem("lc_login_time") || 0);
+    if (saved && loginTime && Date.now() - loginTime > ONE_WEEK_MS) {
+      localStorage.removeItem("lc_token");
+      localStorage.removeItem("lc_user");
+      localStorage.removeItem("lc_login_time");
+      return "";
+    }
+    return saved;
+  });
+
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("lc_user");
+      const loginTime = Number(localStorage.getItem("lc_login_time") || 0);
+      if (saved && loginTime && Date.now() - loginTime > ONE_WEEK_MS) {
+        return null;
+      }
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
@@ -23,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       localStorage.removeItem("lc_token");
       localStorage.removeItem("lc_user");
+      localStorage.removeItem("lc_login_time");
     }
   }, [token]);
 
@@ -33,10 +51,21 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  // Verify token on mount
+  // Verify token on mount (auto-logout if 1 week has passed)
   useEffect(() => {
     const verifyUser = async () => {
       if (!token) {
+        setIsLoadingAuth(false);
+        return;
+      }
+
+      const loginTime = Number(localStorage.getItem("lc_login_time") || 0);
+      if (loginTime && Date.now() - loginTime > ONE_WEEK_MS) {
+        setToken("");
+        setUser(null);
+        localStorage.removeItem("lc_token");
+        localStorage.removeItem("lc_user");
+        localStorage.removeItem("lc_login_time");
         setIsLoadingAuth(false);
         return;
       }
@@ -53,6 +82,7 @@ export const AuthProvider = ({ children }) => {
           // Token expired or invalid
           setToken("");
           setUser(null);
+          localStorage.removeItem("lc_login_time");
         }
       } catch (err) {
         console.error("Auth verification failed:", err);
@@ -79,6 +109,7 @@ export const AuthProvider = ({ children }) => {
 
       setToken(data.token);
       setUser(data.user);
+      localStorage.setItem("lc_login_time", Date.now().toString());
       return data;
     } catch (error) {
       console.error("Google login error:", error);
@@ -91,6 +122,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     localStorage.removeItem("lc_token");
     localStorage.removeItem("lc_user");
+    localStorage.removeItem("lc_login_time");
   };
 
   const authHeader = useMemo(() => {

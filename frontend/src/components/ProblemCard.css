@@ -1,0 +1,285 @@
+.problem-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 18px;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: rgba(18, 24, 38, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(12px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.problem-row:hover {
+  transform: translateY(-2px);
+  background: rgba(26, 34, 52, 0.85);
+  border-color: rgba(99, 102, 241, 0.35);
+  box-shadow: 0 10px 24px -6px rgba(0, 0, 0, 0.45);
+}
+
+.problem-row.is-favorite-row {
+  border-left: 3px solid #f59e0b;
+}
+
+/* Star Favorite Button */
+.fav-star-btn {
+  background: transparent;
+  border: none;
+  font-size: 17px;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px;
+  line-height: 1;
+  transition: transform 0.18s ease, color 0.18s ease;
+}
+
+.fav-star-btn:hover {
+  color: #fbbf24;
+  transform: scale(1.2);
+}
+
+.fav-star-btn.active {
+  color: #f59e0b;
+  text-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
+}
+
+/* Primary Column: Title & LeetCode link */
+.problem-primary-col {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding-right: 6px;
+  min-width: 0;
+}
+
+.problem-title-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: #f1f5f9;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  max-width: 100%;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.problem-title-link:hover {
+  color: #818cf8;
+}
+
+.problem-name-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leetcode-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  color: #fbbf24;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.problem-title-link:hover .leetcode-pill {
+  background: #f59e0b;
+  color: #0b0f19;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+}
+
+.leetcode-pill .arrow-icon {
+  font-size: 11px;
+}
+
+.problem-edit-input {
+  width: 95%;
+  padding: 6px 10px;
+  border: 1px solid rgba(99, 102, 241, 0.5);
+  border-radius: 8px;
+  background: #0f172a;
+  color: #f8fafc;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+/* Topic Column */
+.problem-topic-col {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.topic-pill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3px 9px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* Difficulty Column */
+.problem-difficulty-col {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.diff-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 6px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.diff-chip .diff-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.diff-chip.easy {
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+.diff-chip.easy .diff-dot {
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+}
+
+.diff-chip.medium {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.diff-chip.medium .diff-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 6px #f59e0b;
+}
+
+.diff-chip.hard {
+  color: #fb7185;
+  background: rgba(244, 63, 94, 0.12);
+  border: 1px solid rgba(244, 63, 94, 0.25);
+}
+.diff-chip.hard .diff-dot {
+  background: #f43f5e;
+  box-shadow: 0 0 6px #f43f5e;
+}
+
+/* Note Action */
+.problem-note-col {
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.note-action-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  padding: 4px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.note-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f8fafc;
+}
+
+.note-action-btn.has-note {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.15);
+}
+
+/* Action Buttons (Edit / Delete) */
+.problem-actions-col {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.edit-btn,
+.save-btn,
+.delete-btn {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.edit-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+}
+
+.edit-btn:hover {
+  background: rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: #a5b4fc;
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+}
+
+.delete-btn {
+  background: rgba(244, 63, 94, 0.08);
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  color: #fda4af;
+}
+
+.delete-btn:hover {
+  background: rgba(244, 63, 94, 0.2);
+  border-color: rgba(244, 63, 94, 0.4);
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .problem-row {
+    grid-template-columns: auto 1fr auto;
+    gap: 10px;
+  }
+
+  .problem-topic-col,
+  .problem-difficulty-col {
+    display: none;
+  }
+}

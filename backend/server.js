@@ -42,6 +42,7 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://127.0.0.1:5173",
+  "https://leetcode-tracker-wheat.vercel.app",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL.replace(/\/$/, "")] : [])
 ];
 
@@ -49,7 +50,11 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps, curl, server-to-server health checks)
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.endsWith(".vercel.app")
+      ) {
         return callback(null, true);
       }
       return callback(new Error(`CORS policy violation: Access from ${origin} denied.`));

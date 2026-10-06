@@ -272,14 +272,144 @@
   color: #fff;
 }
 
-@media (max-width: 768px) {
+/* --------------------------------------------------------------------------
+   Responsive Problem Row Layouts
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
   .problem-row {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto 1fr auto auto auto;
     gap: 10px;
+    padding: 12px 14px;
   }
 
-  .problem-topic-col,
-  .problem-difficulty-col {
+  .problem-topic-col {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .problem-row {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas:
+      "star title title title"
+      ".    diff  note  actions";
+    align-items: center;
+    gap: 8px 8px;
+    padding: 11px 12px;
+    border-radius: 12px;
+  }
+
+  .fav-star-btn {
+    grid-area: star;
+    align-self: center;
+    font-size: 16px;
+    padding: 0;
+  }
+
+  .problem-primary-col {
+    grid-area: title;
+    min-width: 0;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .problem-title-link {
+    font-size: 13.5px;
+    gap: 6px;
+  }
+
+  .problem-name-text {
+    max-width: calc(100% - 75px);
+  }
+
+  .leetcode-pill {
+    font-size: 9px;
+    padding: 2px 6px;
+  }
+
+  .problem-topic-col {
+    display: none;
+  }
+
+  .problem-difficulty-col {
+    grid-area: diff;
+    justify-self: start;
+    align-self: center;
+    display: flex !important;
+  }
+
+  .diff-chip {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+
+  .problem-note-col {
+    grid-area: note;
+    justify-self: start;
+    align-self: center;
+    display: flex !important;
+  }
+
+  .note-action-btn {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+  }
+
+  .problem-actions-col {
+    grid-area: actions;
+    justify-self: end;
+    align-self: center;
+    gap: 4px;
+  }
+
+  .edit-btn,
+  .save-btn,
+  .delete-btn {
+    font-size: 10.5px;
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 380px) {
+  .problem-row {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      "star title actions"
+      ".    diff  note";
+    gap: 6px 6px;
+    padding: 9px 10px;
+  }
+
+  .problem-name-text {
+    max-width: calc(100% - 68px);
+  }
+
+  .problem-actions-col {
+    grid-area: actions;
+    gap: 3px;
+  }
+
+  .problem-difficulty-col {
+    grid-area: diff;
+  }
+
+  .problem-note-col {
+    grid-area: note;
+    justify-self: end;
+  }
+
+  .edit-btn,
+  .save-btn,
+  .delete-btn {
+    padding: 3.5px 6px;
+    font-size: 10px;
+  }
+
+  .note-action-btn {
+    padding: 2.5px 6px;
+    font-size: 9.5px;
   }
 }

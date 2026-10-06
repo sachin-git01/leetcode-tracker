@@ -1706,12 +1706,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px;
+  padding: 4px;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  color-scheme: light;
+  background: rgba(18, 24, 38, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(56, 189, 248, 0.55);
+  border: 1.5px solid rgba(56, 189, 248, 0.65);
   box-shadow:
     0 0 50px rgba(14, 165, 233, 0.55),
     0 12px 30px rgba(0, 0, 0, 0.5),
@@ -1719,10 +1721,18 @@
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.glowing-google-btn iframe,
+.glowing-google-btn > div {
+  border-radius: 9999px !important;
+  overflow: hidden !important;
+  color-scheme: light !important;
+  background-color: transparent !important;
+}
+
 .glowing-google-btn:hover {
   transform: translateY(-2px) scale(1.03);
   border-color: #38bdf8;
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(18, 24, 38, 0.95);
   box-shadow:
     0 0 65px rgba(14, 165, 233, 0.75),
     0 16px 36px rgba(0, 0, 0, 0.6),

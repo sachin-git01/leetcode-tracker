@@ -120,7 +120,7 @@ const LandingHero = () => {
               {errorMsg && (
                 <div className="cta-error-chip">⚠️ {errorMsg}</div>
               )}
-              <div className="glowing-google-btn">
+              <div className="glowing-google-btn" style={{ colorScheme: "light" }}>
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}

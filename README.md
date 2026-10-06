@@ -1,6 +1,6 @@
 # 🚀 LeetCode Tracker
 
-A full-stack web application designed to track, organize, and monitor your Data Structures and Algorithms (DSA) problem-solving journey.
+A full-stack web application designed to track, organize, and monitor your Data Structures and Algorithms (DSA) problem-solving journey with secure Google OAuth authentication and MongoDB Atlas cloud synchronization.
 
 ---
 
@@ -12,6 +12,8 @@ This project strictly adheres to the **Model-View-Controller (MVC)** architectur
        +--------------------------------------------------+
        |                  VIEW (React UI)                 |
        |  - src/App.jsx                                   |
+       |  - src/components/LandingHero.jsx                |
+       |  - src/components/Navbar.jsx                     |
        |  - src/components/ProblemCard.jsx                |
        +------------------------+-------------------------+
                                 |
@@ -19,44 +21,40 @@ This project strictly adheres to the **Model-View-Controller (MVC)** architectur
                                 v
        +--------------------------------------------------+
        |               ROUTER & CONTROLLER                |
+       |  - backend/routes/authRoutes.js                  |
        |  - backend/routes/problemRoutes.js               |
+       |  - backend/controllers/authController.js         |
        |  - backend/controllers/problemController.js      |
+       |  - backend/middleware/authMiddleware.js          |
        +------------------------+-------------------------+
                                 |
                      Reads/Write| Data
                                 v
        +--------------------------------------------------+
        |                  MODEL (Data)                    |
-       |  - backend/models/problemModel.js                |
-       +--------------------------------------------------+
+       |  - backend/models/User.js                        |
+       |  - backend/models/Problem.js                     |
+       |  - backend/models/suggestionModel.js             |
+       +------------------------+-------------------------+
 ```
 
 ### 1. Model (`backend/models/`)
-* **File:** `problemModel.js`
-* **Role:** Manages the data layer, schemas, and in-memory or database operations.
-* **Responsibilities:**
-  - Storing problem records (ID, title, topic, difficulty, notes).
-  - Data retrieval (`getAll`, `getById`, `findByTitle`).
-  - Data mutations (`create`, `update`, `delete`).
+* **`User.js`**: User account schema, Google profile metadata, and aggregated solver statistics.
+* **`Problem.js`**: Problem record schema with user scoping, status, notes, tags, difficulty, and high-performance compound indices.
+* **`suggestionModel.js`**: In-memory catalog of 4,073+ official LeetCode problems for ultra-fast title matching and URL parsing.
 
 ### 2. View (`src/`)
 * **Role:** The user-facing client interface built with **React** and **Vite**.
 * **Responsibilities:**
-  - Presenting data dynamically with responsive UI and animations.
-  - User interactions (forms, search, theme toggles, modal dialogs).
-  - Dispatching asynchronous API requests to the backend controller.
+  - Modern, responsive, zero-purple dark UI.
+  - Interactive problems workspace with filtering, searching, and topic categorization.
+  - One-click Google Sign-In via `@react-oauth/google`.
+  - Lazy-loaded executive PDF export/import.
 
-### 3. Controller (`backend/controllers/`)
-* **File:** `problemController.js`
-* **Role:** The brain connecting the Model and View.
-* **Responsibilities:**
-  - Validating incoming request payloads.
-  - Calling corresponding methods on the Model.
-  - Sending appropriate HTTP status codes and JSON payloads back to the View.
-
-### 4. Routes (`backend/routes/`)
-* **File:** `problemRoutes.js`
-* **Role:** Defines HTTP endpoints and delegates execution to Controller actions.
+### 3. Controller & Router (`backend/controllers/` & `backend/routes/`)
+* **`authController.js` & `authRoutes.js`**: Verifies Google OAuth ID tokens via `google-auth-library` and issues secure JWT tokens.
+* **`problemController.js` & `problemRoutes.js`**: Validates request payloads, manages CRUD operations scoped to authenticated users, and protects against ReDoS.
+* **`authMiddleware.js`**: JWT Bearer token protection for protected API routes.
 
 ---
 
@@ -66,66 +64,83 @@ This project strictly adheres to the **Model-View-Controller (MVC)** architectur
 leetcode-tracker/
 │
 ├── backend/                          # Backend Server (MVC Architecture)
+│   ├── config/
+│   │   └── db.js                     # MongoDB Atlas Mongoose connection
 │   ├── controllers/
-│   │   └── problemController.js      # Controller: Request handling & response logic
+│   │   ├── authController.js         # Controller: Google OAuth & JWT generation
+│   │   └── problemController.js      # Controller: Scoped CRUD & stats calculation
+│   ├── middleware/
+│   │   └── authMiddleware.js         # JWT verification middleware
 │   ├── models/
-│   │   ├── problemModel.js           # Model: Data storage and operations
-│   │   └── suggestionModel.js        # Model: LeetCode catalog & URL slug generator
+│   │   ├── Problem.js                # Model: Mongoose Problem schema & indices
+│   │   ├── User.js                   # Model: Mongoose User schema
+│   │   └── suggestionModel.js        # Model: 4,073+ LeetCode catalog & URL parser
 │   ├── routes/
-│   │   └── problemRoutes.js          # Routes: Endpoint mappings
+│   │   ├── authRoutes.js             # Routes: /auth endpoints
+│   │   └── problemRoutes.js          # Routes: /problems endpoints
+│   ├── scripts/
+│   │   └── checkDb.js                # Utility: MongoDB live status check
+│   ├── .env.example                  # Environment variable reference
 │   ├── package.json                  # Backend dependencies & scripts
-│   └── server.js                     # Express app setup and middleware configuration
+│   └── server.js                     # Hardened Express app (Helmet, CORS, Rate-Limit, Compression)
 │
 ├── frontend/                         # Frontend View Layer (React + Vite)
 │   ├── public/                       # Static assets
 │   ├── src/
-│   │   ├── assets/                   # Images and static files
+│   │   ├── assets/                   # Static icons and assets
 │   │   ├── components/
-│   │   │   ├── ProblemCard.jsx       # Problem item component with direct LeetCode link
+│   │   │   ├── LandingHero.jsx       # Futuristic zero-scroll landing page
+│   │   │   ├── Navbar.jsx            # User profile header & sign-out modal
+│   │   │   ├── ProblemCard.jsx       # Problem item component with LeetCode link
 │   │   │   └── ProblemCard.css       # Problem card styles
-│   │   ├── App.jsx                   # Main application view with auto-suggestions
-│   │   ├── App.css                   # Application layout, animations & dark styles
-│   │   ├── index.css                 # Global design tokens and root styles
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx       # Global authentication state provider
+│   │   ├── App.jsx                   # Main application view with search & filters
+│   │   ├── App.css                   # Central design system & responsive layout
+│   │   ├── index.css                 # Design tokens and root reset
 │   │   └── main.jsx                  # React DOM mounting entry point
+│   ├── .env.example                  # Frontend environment variable reference
+│   ├── vercel.json                   # Vercel deployment SPA rewrite config
 │   ├── index.html                    # HTML shell
 │   ├── package.json                  # Frontend dependencies & scripts
-│   └── vite.config.js                # Vite configuration
+│   └── vite.config.js                # Vite build configuration
 │
+├── .gitignore                        # Global Git ignore rules (.env protected)
 ├── package.json                      # Root workspace scripts
-├── read.md                           # Documentation & architecture guide
-└── README.md                         # Standard repository readme
+└── README.md                         # Project documentation
 ```
 
 ---
 
 ## ⚡ Features
 
-* 💡 **Full 4,000+ LeetCode Catalog**: Search across all 4,069 official LeetCode questions or paste direct LeetCode URLs to auto-detect title, topic, and difficulty!
-* ↗️ **Direct LeetCode Redirection**: Click any problem title to instantly open its official LeetCode problem page in a new tab.
-* ⭐ **Star Favorites**: Flag key or favorite problems with a single click.
-* 🏷️ **Interactive Filter Tabs**: Filter your solved repository by All, Easy, Medium, Hard, or Favorites.
-* 🔎 **In-List Quick Search**: Instantly find any problem in your list in real-time.
-* 📄 **Executive PDF Export & Import**: Export a beautifully formatted, publication-grade PDF portfolio of all your solved problems (with stats banner, colorized difficulty, topics, notes, and direct clickable links to LeetCode), and import problems directly from PDF backups anytime!
-* ⌨️ **Keyboard Shortcut**: Press `/` anywhere to focus the search bar, `Esc` to close any modal.
-* 📊 **Live Stats Dashboard**: Instant overview of Total, Easy, Medium, and Hard problems solved with visual progress bar.
-* 📂 **Collapsible Topic Sections**: Expand or collapse topics, with sub-accordions per difficulty.
-* 📝 **Study Notes**: Intuitive modal to write intuition, edge cases, and approach notes.
-* 🌙 **Permanent Dark Mode**: Sleek, immersive modern dark UI tailored for programmers.
-* ⚠️ **Duplicate Detection**: Prevents adding duplicate problem titles with an alert modal.
+* 🔐 **Secure Google OAuth 2.0**: Seamless, one-click sign in; each user's problem repository is private and isolated.
+* ☁️ **MongoDB Atlas Cloud Sync**: All problems, notes, and favorites sync automatically across devices.
+* 💡 **Full 4,000+ LeetCode Catalog**: Search across 4,073+ official questions or paste any LeetCode URL to auto-detect title, topic, and difficulty.
+* ↗️ **Direct LeetCode Redirection**: Click any problem title to open its official LeetCode page.
+* ⭐ **Star Favorites**: Flag key problems for quick revision.
+* 🏷️ **Interactive Filter Tabs**: Filter by All, Easy, Medium, Hard, or Favorites.
+* 🔎 **In-List Quick Search**: Real-time filtering with ReDoS-safe search.
+* 📄 **Executive PDF Export & Import**: Code-split, publication-grade PDF portfolio export with embedded lossless backup data for one-click restore.
+* ⌨️ **Keyboard Shortcuts**: Press `/` anywhere to focus search/add input, `Esc` to close modals.
+* 📊 **Live Stats Dashboard**: Instant overview of Total, Easy, Medium, and Hard problems solved with visual progress bars.
+* 🛡️ **Production-Hardened Security**: Equipped with Helmet HTTP security headers, origin-restricted CORS, rate limiting against DDoS/brute force, and Gzip/Brotli response compression.
 
 ---
 
 ## 🔌 API Endpoints (Backend)
 
-| Method | Endpoint | Description | Status Code |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/problems` | Retrieve all solved problems | `200 OK` |
-| `GET` | `/problems/suggestions?q=...` | Search catalog & get LeetCode suggestions | `200 OK` |
-| `POST` | `/problems` | Create a new problem | `201 Created` / `400` / `409` |
-| `PUT` | `/problems/:id` | Update an existing problem (notes, title, favorites) | `200 OK` / `404 Not Found` |
-| `DELETE`| `/problems/:id` | Remove a problem by ID | `200 OK` / `404 Not Found` |
-| `POST` | `/problems/import` | Bulk restore/import problems from JSON backup | `200 OK` |
-| `GET` | `/health` | Health check endpoint | `200 OK` |
+| Method | Endpoint | Description | Auth Required | Status Code |
+| :--- | :--- | :--- | :---: | :--- |
+| `POST` | `/auth/google` | Sign in / register via Google ID token | No | `200 OK` / `400` |
+| `GET` | `/auth/me` | Fetch authenticated user profile & stats | Yes | `200 OK` / `401` |
+| `GET` | `/problems` | Retrieve all solved problems for user | Yes | `200 OK` |
+| `GET` | `/problems/suggestions?q=...` | Search catalog & get LeetCode suggestions | Optional | `200 OK` |
+| `POST` | `/problems` | Create a new solved problem | Yes | `201 Created` / `400` / `409` |
+| `PUT` | `/problems/:id` | Update an existing problem (notes, title, favorites) | Yes | `200 OK` / `404` |
+| `DELETE`| `/problems/:id` | Remove a problem by ID | Yes | `200 OK` / `404` |
+| `POST` | `/problems/import` | Bulk restore problems from JSON backup | Yes | `200 OK` |
+| `GET` | `/health` | Health check & uptime monitoring | No | `200 OK` |
 
 ---
 
@@ -134,36 +149,26 @@ leetcode-tracker/
 ### 1. Prerequisites
 * **Node.js** (v18 or higher recommended)
 * **npm**
+* A free **MongoDB Atlas** cluster URI
+* A **Google Cloud Console OAuth 2.0 Client ID**
 
-### 2. Running the Backend
+### 2. Backend Setup
 ```bash
 cd backend
 npm install
+cp .env.example .env
+# Edit .env and supply your MONGODB_URI, JWT_SECRET, and GOOGLE_CLIENT_ID
 npm run dev
-# or: npm start
+# Or production: npm start
 ```
 The backend server runs on `http://localhost:5000`.
 
-### 3. Running the Frontend
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
+cp .env.example .env
+# Edit .env and supply your VITE_GOOGLE_CLIENT_ID and VITE_API_URL
 npm run dev
 ```
-Open your browser at the local URL provided by Vite (typically `http://localhost:5173`).
-
----
-
-## 🛡️ MVC Building Guidelines for Future Development
-
-When extending this project, continue to uphold the **MVC architecture**:
-
-1. **New Data Entities**:
-   - Add new data logic and schemas in `backend/models/`.
-2. **New Business Logic & APIs**:
-   - Write request handlers in `backend/controllers/`.
-   - Wire endpoints in `backend/routes/`.
-   - Keep `backend/server.js` clean—only use it for middleware and mounting route modules.
-3. **UI & View**:
-   - Keep React components modular inside `src/components/`.
-   - Call backend controller endpoints via centralized API utilities or services.
+Open `http://localhost:5173/` in your browser.

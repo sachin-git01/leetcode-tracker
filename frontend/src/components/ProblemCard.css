@@ -315,15 +315,25 @@
   }
 
   .problem-title-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-width: 0;
     font-size: 13.5px;
     gap: 6px;
   }
 
   .problem-name-text {
-    max-width: calc(100% - 75px);
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .leetcode-pill {
+    flex-shrink: 0;
     font-size: 9px;
     padding: 2px 6px;
   }

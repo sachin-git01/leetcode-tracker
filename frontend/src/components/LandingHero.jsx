@@ -120,7 +120,7 @@ const LandingHero = () => {
               {errorMsg && (
                 <div className="cta-error-chip">⚠️ {errorMsg}</div>
               )}
-              <div className="glowing-google-btn" style={{ colorScheme: "light" }}>
+              <div className="glowing-google-btn">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
@@ -128,6 +128,7 @@ const LandingHero = () => {
                   shape="pill"
                   text="continue_with"
                   size="large"
+                  width="280"
                 />
               </div>
             </div>
@@ -158,22 +159,22 @@ const LandingHero = () => {
           <div className="master-features-strip">
             <div className="feature-strip-item">
               <span className="strip-icon">⚡</span>
-              <span className="strip-label">4,073+ Catalog &amp; URL Parser</span>
+              <span className="strip-label">4,073+ Problem Catalog</span>
             </div>
             <div className="strip-divider" />
             <div className="feature-strip-item">
               <span className="strip-icon">💡</span>
-              <span className="strip-label">Intuition &amp; Complexity Notes</span>
+              <span className="strip-label">Intuition &amp; Notes</span>
             </div>
             <div className="strip-divider" />
             <div className="feature-strip-item">
               <span className="strip-icon">⭐</span>
-              <span className="strip-label">35+ Topics &amp; Starred Revision</span>
+              <span className="strip-label">35+ Topics &amp; Starred</span>
             </div>
             <div className="strip-divider" />
             <div className="feature-strip-item">
               <span className="strip-icon">📄</span>
-              <span className="strip-label">Executive PDF Portfolio Export</span>
+              <span className="strip-label">Portfolio PDF Export</span>
             </div>
           </div>
         </div>
